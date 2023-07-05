@@ -1,0 +1,152 @@
+<div class="m-3">
+ <div class="p-3 space-y-4 mb-4 mt-3">
+<h1 class="text-xl text-cura-600 font-bold">Complaints</h1>
+<form class="flex items-center gap-x-8">
+  <label for="voice-search" class="sr-only">Search</label>
+  <div class="relative grow">
+      <div class="absolute inset-y-0 right-0 flex items-center pr-10 pointer-events-none">
+          <svg class="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M11.0482 10.0737L14 13.0248L13.0248 14L10.0737 11.0482C8.9757 11.9285 7.60993 12.4072 6.20262 12.4052C2.77877 12.4052 0 9.62646 0 6.20262C0 2.77877 2.77877 0 6.20262 0C9.62646 0 12.4052 2.77877 12.4052 6.20262C12.4072 7.60993 11.9285 8.9757 11.0482 10.0737ZM9.66575 9.56237C10.5404 8.66291 11.0289 7.45722 11.0269 6.20262C11.0269 3.53687 8.86768 1.37836 6.20262 1.37836C3.53687 1.37836 1.37836 3.53687 1.37836 6.20262C1.37836 8.86768 3.53687 11.0269 6.20262 11.0269C7.45722 11.0289 8.66291 10.5404 9.56237 9.66575L9.66575 9.56237Z" fill="currentColor"/>
+            </svg>
+
+      </div>
+      <input [disabled]="isfetching" type="tel" [(ngModel)]="phone_number" name="phone_number" (ngModelChange)="searchByNumber($event)" id="voice-search" class="bg-white text-gray-900 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-cura-500 focus:border-cura-500 block w-full pr-20 pl-4 py-2" placeholder="Enter phone number">
+  </div>
+  <button [disabled]="(data$ | async)?.length == 0" (click)="exportToExcel()" type="button" class="inline-flex items-center gap-2 text-white bg-cura-600 rounded-full text-sm px-8 py-2 text-center focus:outline-none border border-transparent shadow-[1px_3px_3px_0px_rgba(0,0,0,0.12)] disabled:opacity-75 disabled:cursor-not-allowed">
+      <svg class="w-3.5 h-3.5 -ml-1 mr-2" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10.414 2H19C19.2652 2 19.5196 2.10536 19.7071 2.29289C19.8946 2.48043 20 2.73478 20 3V17C20 17.2652 19.8946 17.5196 19.7071 17.7071C19.5196 17.8946 19.2652 18 19 18H1C0.734784 18 0.48043 17.8946 0.292893 17.7071C0.105357 17.5196 0 17.2652 0 17V1C0 0.734784 0.105357 0.48043 0.292893 0.292893C0.48043 0.105357 0.734784 0 1 0H8.414L10.414 2ZM11 10V6H9V10H6L10 14L14 10H11Z" fill="white"/>
+        </svg>
+        Export Complaints CSV</button>
+</form>
+
+  <div class="flex justify-between">
+    <div class="flex items-center gap-x-4">
+      <button [disabled]="isfetching" type="button" nz-dropdown [nzDropdownMenu]="startDatemenu" (nzVisibleChange)="nzStartDateVisible = $event" [nzVisible]="nzStartDateVisible" nzTrigger="click" class="inline-flex bg-white items-center gap-2 text-cura-700 rounded-full text-sm px-6 py-2 text-center focus:outline-none focus:z-10 focus:border-cura-800 border border-transparent shadow-[1px_3px_3px_0px_rgba(0,0,0,0.12)] min-w-[150px] disabled:opacity-75 disabled:cursor-not-allowed">
+        <svg class="w-3.5 h-3.5 -ml-1" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.3737 7H0.257452V13.3C0.257452 13.4857 0.331813 13.6637 0.464179 13.795C0.596544 13.9263 0.776071 14 0.963264 14H13.6679C13.8551 14 14.0346 13.9263 14.167 13.795C14.2993 13.6637 14.3737 13.4857 14.3737 13.3V7ZM3.78651 1.4H0.963264C0.776071 1.4 0.596544 1.47375 0.464179 1.60503C0.331813 1.7363 0.257452 1.91435 0.257452 2.1V5.6H14.3737V2.1C14.3737 1.91435 14.2993 1.7363 14.167 1.60503C14.0346 1.47375 13.8551 1.4 13.6679 1.4H10.8446V0H9.43301V1.4H5.19813V0H3.78651V1.4Z" fill="currentColor"/>
+          </svg>
+          {{startDate ?'Start Date: ' + (startDate | date: 'mediumDate') : 'Select Start Date'}}
+      </button>
+      <button [disabled]="isfetching" type="button" nz-dropdown [nzDropdownMenu]="endDatemenu" (nzVisibleChange)="nzEndDateVisible = $event" [nzVisible]="nzEndDateVisible" nzTrigger="click" class="inline-flex bg-white items-center gap-2 text-cura-700 rounded-full text-sm px-6 py-2 text-center focus:outline-none focus:z-10 focus:border-cura-800 border border-transparent shadow-[1px_3px_3px_0px_rgba(0,0,0,0.12)] min-w-[150px] disabled:opacity-75 disabled:cursor-not-allowed">
+        <svg class="w-3.5 h-3.5 -ml-1" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.3737 7H0.257452V13.3C0.257452 13.4857 0.331813 13.6637 0.464179 13.795C0.596544 13.9263 0.776071 14 0.963264 14H13.6679C13.8551 14 14.0346 13.9263 14.167 13.795C14.2993 13.6637 14.3737 13.4857 14.3737 13.3V7ZM3.78651 1.4H0.963264C0.776071 1.4 0.596544 1.47375 0.464179 1.60503C0.331813 1.7363 0.257452 1.91435 0.257452 2.1V5.6H14.3737V2.1C14.3737 1.91435 14.2993 1.7363 14.167 1.60503C14.0346 1.47375 13.8551 1.4 13.6679 1.4H10.8446V0H9.43301V1.4H5.19813V0H3.78651V1.4Z" fill="currentColor"/>
+          </svg>
+          {{enddate ? 'End Date: ' + (enddate | date: 'mediumDate') : 'Select End Date'}}
+      </button>
+      <button [disabled]="isfetching" nz-dropdown [nzDropdownMenu]="menu" (nzVisibleChange)="nzVisible = $event" [nzVisible]="nzVisible" nzTrigger="click" type="button" class="inline-flex bg-white items-center gap-2 text-cura-700 rounded-full text-sm px-6 py-2 text-center focus:outline-none focus:z-10 focus:border-cura-800 border border-transparent shadow-[1px_3px_3px_0px_rgba(0,0,0,0.12)] min-w-[150px] disabled:opacity-75 disabled:cursor-not-allowed">
+        <svg class="w-3.5 h-3.5 -ml-1" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.3737 7H0.257452V13.3C0.257452 13.4857 0.331813 13.6637 0.464179 13.795C0.596544 13.9263 0.776071 14 0.963264 14H13.6679C13.8551 14 14.0346 13.9263 14.167 13.795C14.2993 13.6637 14.3737 13.4857 14.3737 13.3V7ZM3.78651 1.4H0.963264C0.776071 1.4 0.596544 1.47375 0.464179 1.60503C0.331813 1.7363 0.257452 1.91435 0.257452 2.1V5.6H14.3737V2.1C14.3737 1.91435 14.2993 1.7363 14.167 1.60503C14.0346 1.47375 13.8551 1.4 13.6679 1.4H10.8446V0H9.43301V1.4H5.19813V0H3.78651V1.4Z" fill="currentColor"/>
+          </svg>
+          {{filterStatus ? 'Status: '+(filterStatus | titlecase) : 'Select Status'}}
+      </button>
+      <button [disabled]="isfetching" (click)="filterTable()" type="button" class="inline-flex bg-white items-center gap-2 text-cura-700 rounded-full text-sm px-8 py-2 text-center focus:outline-none focus:z-10 focus:border-cura-800 border border-transparent shadow-[1px_3px_3px_0px_rgba(0,0,0,0.12)] disabled:opacity-75 disabled:cursor-not-allowed" [class]="filtered ? 'activebtn' : ''">
+          <svg class="w-3.5 h-3.5 -ml-1" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M5.2974 8.68421L0.381927 1.57895V0H13.4899V1.57895L8.57439 8.68421V13.4211L5.2974 15V8.68421Z" fill="currentColor"/>
+            </svg>
+          Filter
+      </button>
+      <button [disabled]="isfetching" *ngIf="filtered" (click)="clearFilter()" type="button" class="inline-flex bg-white items-center gap-2 text-cura-700 rounded-full text-sm px-6 py-2 text-center focus:outline-none focus:z-10 focus:border-cura-800 border border-transparent shadow-[1px_3px_3px_0px_rgba(0,0,0,0.12)] disabled:opacity-75 disabled:cursor-not-allowed">
+        <svg class="w-3.5 h-3.5 -ml-1" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10.274 20C4.70512 20 0.190948 15.523 0.190948 10C0.190948 4.477 4.70512 0 10.274 0C15.8428 0 20.357 4.477 20.357 10C20.357 15.523 15.8428 20 10.274 20ZM10.274 8.586L7.42249 5.757L5.99575 7.172L8.84824 10L5.99575 12.828L7.42249 14.243L10.274 11.414L13.1255 14.243L14.5522 12.828L11.6997 10L14.5522 7.172L13.1255 5.757L10.274 8.586Z" fill="currentColor"/>
+          </svg>
+        Clear Filter</button>
+    </div>
+    <div class="ml-3">
+      <button [disabled]="isfetching" (click)="goPrevious()" type="button" class="w-8 h-8 bg-white text-black focus:outline-none rounded-full text-sm p-2.5 text-center inline-flex justify-center items-center shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] disabled:opacity-75 disabled:cursor-not-allowed">
+        <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2.828 6.636L7.778 11.586L6.364 13L-2.78179e-07 6.636L6.364 0.271999L7.778 1.686L2.828 6.636Z" fill="currentColor"/>
+          </svg>
+        <span class="sr-only">Icon description</span>
+      </button>
+      <span class="inline-block p-2 mx-2 text-center">
+        {{tableParams.start}} to {{tableParams.end}} of {{tableParams.size}}
+      </span>
+      <button [disabled]="isfetching" (click)="goNext()" type="button" class="w-8 h-8 bg-white text-black focus:outline-none rounded-full text-sm p-2.5 text-center inline-flex justify-center items-center shadow-[0px_0px_4px_0px_rgba(0,0,0,0.25)] disabled:opacity-75 disabled:cursor-not-allowed">
+        <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5.172 6.364L0.222 1.414L1.636 -2.78179e-07L8 6.364L1.636 12.728L0.222 11.314L5.172 6.364Z" fill="currentColor"/>
+          </svg>
+        <span class="sr-only">Icon description</span>
+      </button>
+    </div>
+   </div>
+ </div>
+</div>
+<div class="mx-3">
+  <app-cura-table
+  (tableDataParamsEmitter)="getParamsData($event)"
+  (viewModalEmitter)="viewDetailsModal($event)"
+  class="component-wrapper"
+  [columns]="columns"
+  [data]="(data$ | async)!"
+  [isLoading]="isfetching"
+  [pageSize]="10"
+  >
+  <ng-template appCuraTableHeader let-columns>
+    <div class="py-4 px-3 text-dark text-center text-lg font-medium" *ngFor="let col of columns">
+      {{ col.colName }}
+    </div>
+  </ng-template>
+
+  <ng-template appCuraTableBody let-data>
+    <div class="py-5 px-4 text-dark text-center text-base" *ngFor="let col of data.columns">
+      {{ data.rowData[col.fieldName] }}
+    </div>
+  </ng-template>
+  </app-cura-table>
+</div>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <div class="w-full p-3 bg-white rounded grid grid-cols-1 divide-y shadow-[3px_4px_4px_0px_rgba(0,0,0,0.19)]">
+    <div class="p-2 hover:bg-gray-100" [class]="filterStatus == 'open' ? 'text-cura-600' : ''" (click)="filterByStatus('open')">Open</div>
+    <div class="p-2 hover:bg-gray-100" [class]="filterStatus == 'pending' ? 'text-cura-600' : ''" (click)="filterByStatus('pending')">In Progress</div>
+    <div class="p-2 hover:bg-gray-100" [class]="filterStatus == 'resolved' ? 'text-cura-600' : ''" (click)="filterByStatus('resolved')">Resolved</div>
+  </div>
+</nz-dropdown-menu>
+<nz-dropdown-menu #startDatemenu="nzDropdownMenu">
+  <nz-date-picker nzInline [(ngModel)]="startDate" (ngModelChange)="onStartChange($event)"></nz-date-picker>
+
+</nz-dropdown-menu>
+<nz-dropdown-menu #endDatemenu="nzDropdownMenu">
+  <nz-date-picker nzInline [(ngModel)]="enddate" (ngModelChange)="onEndChange($event)"></nz-date-picker>
+
+</nz-dropdown-menu>
+
+
+<nz-modal [(nzVisible)]="viewModalOpen" nzTitle="View Details" (nzOnCancel)="closeDetailsModal()" [nzFooter]="null">
+  <ng-container *nzModalContent>
+    <div>
+      <div>
+        <dl class="divide-y divide-gray-100">
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">Complaint Type</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{singleItem?.complaint_type}}</dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">Time</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{singleItem?.date | date}} {{singleItem?.time}}</dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">Phone Number</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{singleItem?.phone_number}}</dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">Rating</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{singleItem?.rating}}</dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">NPS</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">{{singleItem?.nps}}</dd>
+          </div>
+          <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+            <dt class="text-sm font-medium leading-6 text-gray-900">Status</dt>
+            <dd class="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+              <span *ngIf="singleItem?.status=== 'Resolved'" class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-lg ">{{singleItem?.status}}</span>
+              <span *ngIf="singleItem?.status=== 'Pending'" class="bg-blue-100 text-blue-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-lg ">{{singleItem?.status}}</span>
+              <span *ngIf="singleItem?.status=== 'Open'" class="bg-gray-100 text-gray-800 text-xs font-medium mr-2 px-2.5 py-1 rounded-lg ">{{singleItem?.status}}</span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>

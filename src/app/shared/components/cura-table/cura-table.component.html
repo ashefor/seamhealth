@@ -1,0 +1,48 @@
+<div class="table-container">
+  <div class="">
+    <div class="curatable-header">
+      <ng-container *ngTemplateOutlet="header.template; context: { $implicit: columns }"></ng-container>
+    </div>
+
+    <div class="space-y-3 my-3">
+      <ng-container *ngIf="isLoading; else showTemplate">
+        <div class="px-3 curatable-empty">
+          Loading...
+      </div>
+      </ng-container>
+    </div>
+    <ng-template #showEmpty>
+      <div class="px-3 curatable-empty">
+          No results
+      </div>
+    </ng-template>
+    <ng-template #showTemplate>
+      <ng-container *ngIf="items.length; else showEmpty">
+        <div class="curatable-row border border-transparent hover:border-cura-600" *ngFor="let item of items; index as i">
+          <ng-container *ngTemplateOutlet="
+            body.template;
+            context: { $implicit: { rowData: item, index: i, columns: columns } }
+          ">
+          </ng-container>
+          <div class="px-3">
+            <button (click)="viewDetails(item)" type="button" class="text-cura-700 hover:text-white border border-cura-700 hover:bg-cura-800 focus:ring-4 focus:outline-none focus:ring-cura-300 font-medium rounded-full text-sm px-6 py-2 text-center">View</button>
+          </div>
+        </div>
+      </ng-container>
+    </ng-template>
+
+    <!-- <div class="actions">
+      <div class="current">
+        <strong>{{ pageData.start + 1 }} <span>-</span> {{ pageData.end }}</strong>
+        of {{ dataSize }}
+      </div>
+
+      <span (click)="previous()" class="material-symbols-outlined">
+        navigate_before
+      </span>
+      <span (click)="next()" class="material-symbols-outlined">
+        navigate_next
+      </span>
+    </div> -->
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<header class="px-8 py-7 bg-white h-24">
+  <div class="flex justify-between items-center">
+
+<nav class="flex" aria-label="Breadcrumb">
+  <ol class="inline-flex items-center space-x-1 md:space-x-3">
+    <li class="inline-flex items-center">
+      <a href="#" class="inline-flex items-center text-2xl font-bold text-dark hover:text-cura-600">
+        {{(header$ | async)?.parent}}
+      </a>
+    </li>
+    <li aria-current="page">
+      <div class="flex items-center">
+        <svg class="w-3 h-3 text-black mx-1" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4.95 6.364L0 1.414L1.414 0L7.778 6.364L1.414 12.728L0 11.314L4.95 6.364Z" fill="black"/>
+          <path d="M12.95 6.364L8 1.414L9.414 0L15.778 6.364L9.414 12.728L8 11.314L12.95 6.364Z" fill="black"/>
+          </svg>
+        <span class="ml-1 text-xl text-dark">{{(header$ | async)?.heading}}</span>
+      </div>
+    </li>
+  </ol>
+</nav>
+
+    <button class="rounded-full bg-white-800 p-1 text-cura-600 focus:outline-none focus:ring-2 focus:ring-cura-400 focus:ring-offset-2 focus:ring-offset-cura-800">
+      <svg class="w-6 h-6" viewBox="0 0 26 27" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M26 22.6047H0V20.093H1.3V11.3413C1.3 5.07726 6.539 0 13 0C19.461 0 24.7 5.07726 24.7 11.3413V20.093H26V22.6047ZM9.75 23.8605H16.25C16.25 24.6931 15.9076 25.4917 15.2981 26.0805C14.6886 26.6692 13.862 27 13 27C12.138 27 11.3114 26.6692 10.7019 26.0805C10.0924 25.4917 9.75 24.6931 9.75 23.8605Z" fill="currentColor"/>
+        </svg>
+    </button>
+  </div>
+</header>
