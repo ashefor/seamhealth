@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CuraTableComponent } from '@shared/components/cura-table/cura-table.component';
-import { ColumnData, columns, data } from './mock';
+import { ColumnData, columns } from './mock';
 import { CuraTableBodyDirective } from '@shared/components/cura-table/cura-table-body.directive';
 import { CuraTableHeaderDirective } from '@shared/components/cura-table/cura-table-header.directive';
 import { AntImports } from '@shared/ant-imports';
 import { FormsModule } from '@angular/forms';
 import { customDateFormatter } from '@core/utils';
 import { ProjectService } from '@core/project.service';
-import { Observable, defaultIfEmpty, filter, startWith, tap } from 'rxjs';
+import { startWith, tap } from 'rxjs';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'app-complaints',
@@ -26,6 +27,7 @@ export class ComplaintsComponent implements OnInit {
   @Input() parent?: string;
   private readonly chref = inject(ChangeDetectorRef);
   private readonly service = inject(ProjectService);
+  private message = inject(NzMessageService)
 
   data$? = this.service.getComplaints().pipe(tap(() => this.isfetching = false), startWith([]));
   columns = columns;
@@ -91,6 +93,7 @@ export class ComplaintsComponent implements OnInit {
     } else if (params.status) {
       this.filtered = true;
     } else {
+      this.message.create('error', `Please select either status or start and end date.`);
       this.filtered = false;
     }
     this.data$ = this.service.filterComplaints(params)
@@ -108,6 +111,7 @@ export class ComplaintsComponent implements OnInit {
     this.nzEndDateVisible = false;
     this.startDate = undefined;
     this.enddate = undefined;
+    this.filterStatus = undefined;
     this.data$ = this.service.resetComplaints();
   }
 
