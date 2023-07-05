@@ -88,6 +88,7 @@ export class ComplaintsComponent implements OnInit {
       end: customDateFormatter(this.enddate),
       status: this.filterStatus
     }
+    this.phone_number = '';
     if (params.start && params.end && params.status) {
       this.filtered = true;
     } else if (params.status) {
